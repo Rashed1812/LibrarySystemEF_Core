@@ -132,5 +132,27 @@ namespace LibrarySystem.Services
             var books = await _dbContext.Books.ToListAsync();
             return books;
         }
+        public async Task<IEnumerable<Book>> GetAllBooksReadOnlyAsync()
+        {
+            return await _dbContext.Books
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        public async Task<bool> UpdateBookTitleWithAttachAsync(int bookId, string newTitle)
+        {
+            var book = new Book { Id = bookId, Title = newTitle };
+
+            _dbContext.Books.Attach(book);
+            _dbContext.Entry(book).Property(b => b.Title).IsModified = true;
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+        public async Task<IEnumerable<Book>> GetBooksByAuthorIdUsingSPAsync(int authorId)
+        {
+            return await _dbContext.Books
+                .FromSqlRaw("EXEC GetBookByAuthorId @AuthorId = {0}", authorId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }
