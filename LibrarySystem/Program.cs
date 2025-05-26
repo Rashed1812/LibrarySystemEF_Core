@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using LibrarySystem.DTOs;
+using LibrarySystem.IServicesContract;
 using LibrarySystem.Models;
 using LibrarySystem.Services;
 
@@ -88,9 +89,34 @@ namespace LibrarySystem
             var lazyBooks = await bookService.GetAllBooksAsyncUsingLazy();
             Console.WriteLine("Books with Lazy Loading:");
             foreach (var book in lazyBooks)
-                Console.WriteLine($"{book.Title} - {book.Author?.Name}"); 
+                Console.WriteLine($"{book.Title} - {book.Author?.Name}");
 
             #endregion
+
+            #region Bouns
+
+            Console.WriteLine("Read-only Books:");
+            var BookNoTracking = await bookService.GetAllBooksReadOnlyAsync();
+            foreach (var book in BookNoTracking)
+            {
+                Console.WriteLine($"{book.Title}");
+            }
+
+
+            Console.WriteLine("Updating title using Attach");
+            bool updated = await bookService.UpdateBookTitleWithAttachAsync(1, "Updated Title");
+            Console.WriteLine(updated ? "Update successful." : "Update failed.");
+
+
+            Console.WriteLine("Books by AuthorId (stored procedure):");
+            var authorBooks = await bookService.GetBooksByAuthorIdUsingSPAsync(1);
+            foreach (var book in authorBooks)
+            {
+                Console.WriteLine($"{book.Title}");
+            }
+
+            #endregion
+
         }
     }
 }
