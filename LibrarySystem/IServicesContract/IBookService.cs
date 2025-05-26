@@ -25,6 +25,17 @@ namespace LibrarySystem.IServicesContract
         //Get All Books With Author Using Eager Loading
         public Task<IEnumerable<Book>> GetAllBooksAsyncUsingEager();
         //Get All Books With Author Using Lazy Loading
+        #region Bouns
+
         public Task<IEnumerable<Book>> GetAllBooksAsyncUsingLazy();
+        //Get all books (Read-Only)
+        Task<IEnumerable<Book>> GetAllBooksReadOnlyAsync();
+        //Update book title using Attach (no need to fetch first)
+        Task<bool> UpdateBookTitleWithAttachAsync(int bookId, string newTitle);
+        //Get books by AuthorId using stored procedure
+        Task<IEnumerable<Book>> GetBooksByAuthorIdUsingSPAsync(int authorId); 
+
+        #endregion
+
     }
 }
